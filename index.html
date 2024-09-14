@@ -1,9 +1,80 @@
-<!doctype html>
-<html>
-  <head>
-    <title>This is the title of the webpage!</title>
-  </head>
-  <body>
-    <p>This is an example paragraph. Anything in the <strong>body</strong> tag will appear on the page, just like this <strong>p</strong> tag and its contents.</p>
-  </body>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rust Derive Traits Sorter</title>
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Add Prism.js CSS for syntax highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Rust Derive Traits Sorter</h1>
+        </header>
+
+        <section id="introduction">
+            <h4>What:</h4>
+            <p>Easily organize your Rust derive traits for consistency.</p>
+            <h4>Why:</h4>
+            <p>Sorting derives keeps your code predictable and easy to read.
+                While <span class="inline-code">cargo fmt</span> doesn't handle this due to rare edge cases, this tool
+                helps maintain consistent trait order.</p>
+        </section>
+
+        <section id="explanation">
+            <h5>Sorting Methods:</h5>
+            <ul>
+                <li><strong>Canonical:</strong> Standard Rust traits first, followed by others in alphabetical order.
+                </li>
+                <li><strong>Alphabetical:</strong> All traits are sorted alphabetically.
+                </li>
+            </ul>
+
+            <h5>Resources:</h5>
+            <ul>
+                <li>Learn more:
+                    <a href="https://github.com/rust-lang/rustfmt/issues/1867">2017 Feature Request</a>,
+                    <a href="https://github.com/rust-lang/style-team/issues/154">2020 Feature Request</a>
+                </li>
+                <li>CI integration: <a href="https://github.com/maksym-arutyunyan/keepsorted">keepsorted</a>
+                    command-line tool
+                </li>
+            </ul>
+        </section>
+
+        <section id="tool">
+            <label for="sort-type">Sort Type:</label>
+            <select id="sort-type" onchange="sortTraits()">
+                <option value="canonical">Canonical (default)</option>
+                <option value="alphabetical">Alphabetical</option>
+            </select>
+
+            <label for="input-field">Input:</label>
+            <textarea id="input-field" rows="10" oninput="sortTraits()"
+                placeholder="Enter your Rust code here..."></textarea>
+
+            <div class="output-group">
+                <div class="output-header">
+                    <label for="output-field">Output:</label>
+                    <button id="copy-btn" onclick="copyCode()">Copy code</button>
+                </div>
+                <pre><code id="output-field" class="language-rust"></code></pre>
+            </div>
+        </section>
+
+        <footer>
+            <p>Happy coding and keep your traits sorted! 🚀</p>
+        </footer>
+    </div>
+
+    <!-- Add Prism.js JavaScript for syntax highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-rust.min.js"></script>
+    <script src="js/sort.js"></script>
+</body>
+
 </html>
