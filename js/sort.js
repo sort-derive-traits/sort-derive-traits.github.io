@@ -133,7 +133,7 @@ function processLines(lines, strategy) {
 function sort(block, strategy) {
     // Join the block into a single string (removing trailing newlines from each line)
     let line = block.map(line => line.trimEnd()).join('') + '\n';
-    
+
     // Remove comments from the line and trim it
     const lineWithoutComment = line.trim().split('//')[0].trim();
 
@@ -195,35 +195,56 @@ function sort(block, strategy) {
     return block;
 }
 
-function canonicalSort(traits) {
-    // Define the canonical order of traits
-    const canonicalOrder = [
-        "Copy",
-        "Clone",
-        "Eq",
-        "PartialEq",
-        "Ord",
-        "PartialOrd",
-        "Hash",
-        "Debug",
-        "Display",
-        "Default"
-    ];
+const extractLastToken = s => s.split("::").pop() || s;
 
-    // Create a mapping from trait to its canonical index
-    const canonicalIndex = new Map(canonicalOrder.map((trait, index) => [trait, index]));
+function prioritySort(traits, priorityOrder) {
+    const priorityIndex = new Map(priorityOrder.map((trait, index) => [trait, index]));
 
     // Sort traits by canonical index, and by trait name if indices are the same
     return traits.sort((a, b) => {
-        const indexA = canonicalIndex.get(a) !== undefined ? canonicalIndex.get(a) : Number.MAX_SAFE_INTEGER;
-        const indexB = canonicalIndex.get(b) !== undefined ? canonicalIndex.get(b) : Number.MAX_SAFE_INTEGER;
+        const indexA = priorityIndex.get(a) !== undefined ? priorityIndex.get(a) : Number.MAX_SAFE_INTEGER;
+        const indexB = priorityIndex.get(b) !== undefined ? priorityIndex.get(b) : Number.MAX_SAFE_INTEGER;
 
-        return [indexA, a].toString().localeCompare([indexB, b].toString());
+        // First, compare by priority index
+        if (indexA !== indexB) {
+            return indexA - indexB;
+        }
+
+        // Compare by the last token, case-sensitive
+        const lastTokenA = extractLastToken(a);
+        const lastTokenB = extractLastToken(b);
+
+        if (lastTokenA < lastTokenB) return -1;
+        if (lastTokenA > lastTokenB) return 1;
+
+        // Finally, compare the full strings, case-sensitive
+        if (a < b) return -1;
+        if (a > b) return 1;
+
+        return 0;
     });
 }
 
+function canonicalSort(traits) {
+    return prioritySort(
+        traits,
+        // Define the canonical order of traits
+        [
+            "Copy",
+            "Clone",
+            "Eq",
+            "PartialEq",
+            "Ord",
+            "PartialOrd",
+            "Hash",
+            "Debug",
+            "Display",
+            "Default"
+        ]);
+}
+
 function alphabeticalSort(traits) {
-    return traits.sort();
+    return prioritySort(traits, []);
 }
 
 module.exports = {
